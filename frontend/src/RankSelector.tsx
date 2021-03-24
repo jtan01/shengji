@@ -20,7 +20,7 @@ const RankSelector = (props: IProps): JSX.Element => {
   return (
     <div className="rank-picker">
       <label>
-        Your rank:{" "}
+        你打:{" "}
         <select value={props.rank} onChange={handleChange}>
           {allRanks.map((rank) => (
             <option value={rank} key={rank}>

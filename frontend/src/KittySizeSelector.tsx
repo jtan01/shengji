@@ -42,7 +42,7 @@ const KittySizeSelector = (props: IProps): JSX.Element => {
   return (
     <div>
       <label>
-        Number of cards in the bottom:{" "}
+        底牌数:{" "}
         <select
           value={
             props.kittySize !== undefined && props.kittySize !== null

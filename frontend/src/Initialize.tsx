@@ -43,7 +43,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
     <>
       <div>
         <label>
-          Friend selection restriction:{" "}
+          找朋友限制:{" "}
           <select
             value={props.state.propagated.friend_selection_policy}
             onChange={props.setFriendSelectionPolicy}
@@ -60,7 +60,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Multiple joining policy:{" "}
+          是否必打的级:{" "}
           <select
             value={props.state.propagated.multiple_join_policy}
             onChange={props.setMultipleJoinPolicy}
@@ -76,7 +76,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Rank advancement policy:{" "}
+          升级策略:{" "}
           <select
             value={props.state.propagated.advancement_policy}
             onChange={props.setAdvancementPolicy}
@@ -91,7 +91,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Point visibility:{" "}
+          得分显示:{" "}
           <select
             value={
               props.state.propagated.hide_landlord_points ? "hide" : "show"
@@ -105,7 +105,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Played card visibility (in chat):{" "}
+          是否展示打过的牌 (in chat):{" "}
           <select
             value={props.state.propagated.hide_played_cards ? "hide" : "show"}
             onChange={props.setHidePlayedCards}
@@ -117,7 +117,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Penalty for points left in the bottom:{" "}
+          抠底得分翻倍:{" "}
           <select
             value={props.state.propagated.kitty_penalty}
             onChange={props.setKittyPenalty}
@@ -131,7 +131,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Penalty for incorrect throws:{" "}
+          甩牌罚分规则:{" "}
           <select
             value={props.state.propagated.throw_penalty}
             onChange={props.setThrowPenalty}
@@ -145,7 +145,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Play takeback:{" "}
+          可否悔牌:{" "}
           <select
             value={props.state.propagated.play_takeback_policy}
             onChange={props.setPlayTakebackPolicy}
@@ -157,7 +157,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
       </div>
       <div>
         <label>
-          Bid takeback:{" "}
+          可否悔亮主牌:{" "}
           <select
             value={props.state.propagated.bid_takeback_policy}
             onChange={props.setBidTakebackPolicy}
@@ -173,7 +173,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
   return (
     <div>
       <label>
-        Difficulty settings:{" "}
+        难度设置:{" "}
         <button
           className="normal"
           onClick={(evt) => {
@@ -275,7 +275,7 @@ const DeckSettings = (props: IDeckSettings): JSX.Element => {
               />
             </label>
             <label>
-              Minimum card:{" "}
+              最小叫牌:{" "}
               <select
                 value={d.min}
                 onChange={(evt) =>
@@ -299,7 +299,7 @@ const DeckSettings = (props: IDeckSettings): JSX.Element => {
   return (
     <div>
       <label>
-        More deck customization:{" "}
+        其它副牌设置:{" "}
         <button
           className="normal"
           onClick={(evt) => {
@@ -332,7 +332,7 @@ const ScoringSettings = (props: IScoringSettings): JSX.Element => {
   return (
     <div>
       <label>
-        Scoring settings:{" "}
+        升级评分设置:{" "}
         <button
           className="normal"
           onClick={(evt) => {
@@ -382,85 +382,85 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
     <>
       <div>
         <label>
-          Game shadowing policy:{" "}
+          旁观策略:{" "}
           <select
             value={props.state.propagated.game_shadowing_policy}
             onChange={props.setGameShadowingPolicy}
           >
             <option value="AllowMultipleSessions">
-              Allow players to be shadowed by joining with the same name
+              允许以同名玩家旁观
             </option>
             <option value="SingleSessionOnly">
-              Do not allow players to be shadowed
+              不允许旁观
             </option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          Game start policy:{" "}
+          开始牌局按钮:{" "}
           <select
             value={props.state.propagated.game_start_policy}
             onChange={props.setGameStartPolicy}
           >
             <option value="AllowAnyPlayer">
-              Allow any player to start a game
+              任何玩家均可
             </option>
             <option value="AllowLandlordOnly">
-              Allow only landlord to start a game
+              仅限庄家
             </option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          Landlord selection from bid:{" "}
+        亮主牌定庄规则（刚开始时）:{" "}
           <select
             value={props.state.propagated.first_landlord_selection_policy}
             onChange={props.setFirstLandlordSelectionPolicy}
           >
             <option value="ByWinningBid">
-              Winning bid decides both landlord and trump
+              庄家定庄
             </option>
             <option value="ByFirstBid">
-              First bid decides landlord, winning bid decides trump
+              先亮牌定庄
             </option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          Trump policy for cards revealed from the bottom:{" "}
+          翻底亮主牌规则:{" "}
           <select
             value={props.state.propagated.kitty_bid_policy}
             onChange={props.setKittyBidPolicy}
           >
-            <option value="FirstCard">First card revealed</option>
+            <option value="FirstCard">第一张</option>
             <option value="FirstCardOfLevelOrHighest">
-              First card revealed of the appropriate rank
+              第一张常主牌（最大的牌）
             </option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          Bid policy:{" "}
+          反主牌规则:{" "}
           <select
             value={props.state.propagated.bid_policy}
             onChange={props.setBidPolicy}
           >
             <option value="JokerOrGreaterLength">
-              Joker bids to outbid non-joker bids with the same number of cards
+              同数目王牌可反无将
             </option>
             <option value="GreaterLength">
-              All bids must have more cards than the previous bids
+              必须多数才可反
             </option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          Bid reinforcement policy:{" "}
+          叫庄加强策略:{" "}
           <select
             value={props.state.propagated.bid_reinforcement_policy}
             onChange={props.setBidReinforcementPolicy}
@@ -479,7 +479,7 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
       </div>
       <div>
         <label>
-          Joker bid policy:{" "}
+          无将叫牌策略:{" "}
           <select
             value={props.state.propagated.joker_bid_policy}
             onChange={props.setJokerBidPolicy}
@@ -539,7 +539,7 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
   return (
     <div>
       <label>
-        More game settings:{" "}
+        更多设置:{" "}
         <button
           className="normal"
           onClick={(evt) => {
@@ -1036,7 +1036,7 @@ const Initialize = (props: IProps): JSX.Element => {
         name={props.name}
       />
       <p>
-        Send link to other players to allow them to join the game:{" "}
+        用此链接邀请朋友:{" "}
         <a href={window.location.href} target="_blank" rel="noreferrer">
           <code>{window.location.href}</code>
         </a>
@@ -1053,17 +1053,17 @@ const Initialize = (props: IProps): JSX.Element => {
           Start game
         </button>
       ) : (
-        <h2>Waiting for players...</h2>
+        <h2>等待玩家加入...</h2>
       )}
       <Kicker
         players={props.state.propagated.players}
         onKick={(playerId: number) => send({ Kick: playerId })}
       />
       <div className="game-settings">
-        <h3>Game settings</h3>
+        <h3>游戏设置</h3>
         <div>
           <label>
-            Game mode:{" "}
+            牌局模式:{" "}
             <select value={modeAsString} onChange={setGameMode}>
               <option value="Tractor">升级 / Tractor</option>
               <option value="FindingFriends">找朋友 / Finding Friends</option>
@@ -1073,7 +1073,7 @@ const Initialize = (props: IProps): JSX.Element => {
         <div>
           {props.state.propagated.game_mode !== "Tractor" ? (
             <label>
-              Number of friends:{" "}
+              朋友数:{" "}
               <select value={numFriends} onChange={setNumFriends}>
                 <option value="">default</option>
                 {ArrayUtils.range(
@@ -1112,51 +1112,51 @@ const Initialize = (props: IProps): JSX.Element => {
         />
         <div>
           <label>
-            Bids after cards are exchanged from the bottom:{" "}
+            是否炒地皮:{" "}
             <select
               value={props.state.propagated.kitty_theft_policy}
               onChange={setKittyTheftPolicy}
             >
-              <option value="AllowKittyTheft">Allowed (炒地皮)</option>
-              <option value="NoKittyTheft">Not allowed</option>
+              <option value="AllowKittyTheft">允许 (炒地皮)</option>
+              <option value="NoKittyTheft">不允许</option>
             </select>
           </label>
         </div>
         <div>
           <label>
-            Card protection policy:{" "}
+            套牌保护规则:{" "}
             <select
               value={props.state.propagated.trick_draw_policy}
               onChange={setTrickDrawPolicy}
             >
-              <option value="NoProtections">No protections</option>
+              <option value="NoProtections">不保护</option>
               <option value="LongerTuplesProtected">
-                Longer tuple (triple) is protected from shorter (pair)
+                保护高阶（三个不必拆分跟对子 等等）
               </option>
               <option value="OnlyDrawTractorOnTractor">
-                Only tractors can draw tractors
+                对等跟牌
               </option>
               <option value="NoFormatBasedDraw">
-                No format-based requirements (pairs do not draw pairs)
+                无要求 (对子不必跟对子)
               </option>
             </select>
           </label>
         </div>
         <div>
           <label>
-            Multi-throw evaluation policy:{" "}
+            甩牌比较策略:{" "}
             <select
               value={props.state.propagated.throw_evaluation_policy}
               onChange={setThrowEvaluationPolicy}
             >
               <option value="All">
-                Subsequent throw must beat all cards to win
+                跟牌所有套牌都大
               </option>
               <option value="Highest">
-                Subsequent throw must beat highest card to win
+                跟牌比最高阶牌大即可
               </option>
               <option value="TrickUnitLength">
-                Subsequent throw must beat largest component to win
+                跟牌比最高阶套牌大
               </option>
             </select>
           </label>
@@ -1203,7 +1203,7 @@ const Initialize = (props: IProps): JSX.Element => {
         <h3>Misc settings</h3>
         <div>
           <label>
-            Landlord label:{" "}
+            庄家标签:{" "}
             {props.state.propagated.landlord_emoji !== null &&
             props.state.propagated.landlord_emoji !== undefined &&
             props.state.propagated.landlord_emoji !== ""
@@ -1215,7 +1215,7 @@ const Initialize = (props: IProps): JSX.Element => {
                 showPicker ? setShowPicker(false) : setShowPicker(true);
               }}
             >
-              {showPicker ? "Hide" : "Pick"}
+              {showPicker ? "关闭" : "选择"}
             </button>
             <button
               className="normal"
@@ -1235,14 +1235,14 @@ const Initialize = (props: IProps): JSX.Element => {
         </div>
         <div>
           <label>
-            Setting Management:
+            设置管理:
             <button
               className="normal"
               data-tip
               data-for="saveTip"
               onClick={saveGameSettings}
             >
-              Save
+              保存
             </button>
             <ReactTooltip id="saveTip" place="top" effect="solid">
               Save game settings
@@ -1253,7 +1253,7 @@ const Initialize = (props: IProps): JSX.Element => {
               data-for="loadTip"
               onClick={loadGameSettings}
             >
-              Load
+              取回
             </button>
             <ReactTooltip id="loadTip" place="top" effect="solid">
               Load saved game settings
@@ -1264,7 +1264,7 @@ const Initialize = (props: IProps): JSX.Element => {
               data-for="resetTip"
               onClick={resetGameSettings}
             >
-              Reset
+              重置
             </button>
             <ReactTooltip id="resetTip" place="top" effect="solid">
               Reset game settings to defaults

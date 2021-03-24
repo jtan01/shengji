@@ -17,12 +17,12 @@ const NumDecksSelector = (props: IProps): JSX.Element => {
   return (
     <div className="num-decks-picker">
       <label>
-        Number of decks:{" "}
+        多少副牌:{" "}
         <select
           value={props.numDecks === null ? "" : props.numDecks}
           onChange={handleChange}
         >
-          <option value="">default</option>
+          <option value="">预设</option>
           {ArrayUtils.range(props.numPlayers, (idx) => {
             const val = idx + 1;
             return (

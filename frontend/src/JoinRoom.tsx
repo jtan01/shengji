@@ -75,7 +75,7 @@ const JoinRoom = (props: IProps): JSX.Element => {
         <div>
           <h2>
             <label>
-              <strong>Room Name:</strong>{" "}
+              <strong>房间:</strong>{" "}
               {editable ? editableRoomName : nonEditableRoomName}{" "}
               <span
                 title="Generate new room"
@@ -88,7 +88,7 @@ const JoinRoom = (props: IProps): JSX.Element => {
         </div>
         <div>
           <label>
-            <strong>Player Name:</strong>{" "}
+            <strong>玩家名:</strong>{" "}
             <input
               type="text"
               placeholder="Enter your name here"
@@ -99,7 +99,7 @@ const JoinRoom = (props: IProps): JSX.Element => {
           </label>
           <input
             type="submit"
-            value="Join (or create) the game!"
+            value="加入或创建游戏!"
             disabled={
               props.room_name.length !== 16 ||
               props.name.length === 0 ||

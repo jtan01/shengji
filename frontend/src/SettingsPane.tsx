@@ -57,7 +57,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
     <div className="settings">
       <div style={{ display: "table" }}>
         <Row>
-          <LabelCell>four-color mode</LabelCell>
+          <LabelCell>四色模式</LabelCell>
           <Cell>
             <input
               name="four-color-mode"
@@ -68,7 +68,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>use SVG cards</LabelCell>
+          <LabelCell>使用SVG高彩牌</LabelCell>
           <Cell>
             <input
               name="svg-cards"
@@ -79,7 +79,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>always show card labels</LabelCell>
+          <LabelCell>显示牌标签</LabelCell>
           <Cell>
             <input
               name="show-card-labels"
@@ -92,7 +92,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>show last trick</LabelCell>
+          <LabelCell>展示上一轮牌</LabelCell>
           <Cell>
             <input
               name="show-last-trick"
@@ -105,7 +105,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>beep on turn</LabelCell>
+          <LabelCell>轮到出牌响铃</LabelCell>
           <Cell>
             <input
               name="beep-on-turn"
@@ -116,7 +116,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>reverse card order (in hand)</LabelCell>
+          <LabelCell>从大到小排列牌（倒序）</LabelCell>
           <Cell>
             <input
               name="reverse-card-order"
@@ -129,7 +129,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>separate cards by effective suit (in hand)</LabelCell>
+          <LabelCell>把不同花色牌分开</LabelCell>
           <Cell>
             <input
               name="separate-cards-by-suit"
@@ -142,7 +142,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>disable suit highlights</LabelCell>
+          <LabelCell>禁止套牌高亮</LabelCell>
           <Cell>
             <input
               name="disable-suit-highlights"
@@ -155,7 +155,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>unset auto-play if winner changes</LabelCell>
+          <LabelCell>重置自动出牌（如果大牌改变）</LabelCell>
           <Cell>
             <input
               name="unset-auto-play-when-winner-changes"
@@ -212,7 +212,7 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
-          <LabelCell>show debugging information</LabelCell>
+          <LabelCell>显示调试信息</LabelCell>
           <Cell>
             <input
               name="show-debug-info"

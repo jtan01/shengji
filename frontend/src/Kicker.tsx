@@ -15,7 +15,7 @@ const Kicker = (props: IProps): JSX.Element => {
   return (
     <div className="kicker">
       <label>
-        Kick player:{" "}
+        踢出玩家:{" "}
         <select
           value={selection === null ? "" : selection}
           onChange={handleChange}
