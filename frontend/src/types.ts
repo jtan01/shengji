@@ -180,13 +180,13 @@ export interface IPropagatedState {
   advancement_policy: "Unrestricted" | "DefendPoints";
   kitty_penalty: "Times" | "Power";
   kitty_bid_policy: "FirstCard" | "FirstCardOfLevelOrHighest";
-  throw_penalty: "None" | "TenPointsPerAttempt";
+  throw_penalty: "TenPointsPerAttempt" | "None";
   trick_draw_policy: TrickDrawPolicy;
   throw_evaluation_policy: "All" | "Highest" | "TrickUnitLength";
   hide_played_cards: boolean;
   landlord_emoji: string | null;
-  play_takeback_policy: "AllowPlayTakeback" | "NoPlayTakeback";
-  bid_takeback_policy: "AllowBidTakeback" | "NoBidTakeback";
+  play_takeback_policy: "NoPlayTakeback" | "AllowPlayTakeback";
+  bid_takeback_policy: "NoBidTakeback" | "AllowBidTakeback";
   kitty_theft_policy: "AllowKittyTheft" | "NoKittyTheft";
   game_shadowing_policy: "AllowMultipleSessions" | "SingleSessionOnly";
   game_start_policy: "AllowAnyPlayer" | "AllowLandlordOnly";

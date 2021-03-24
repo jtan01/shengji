@@ -50,13 +50,13 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             value={props.state.propagated.friend_selection_policy}
             onChange={props.setFriendSelectionPolicy}
           >
-            <option value="Unrestricted">Non-trump cards</option>
-            <option value="TrumpsIncluded">All cards, including trumps</option>
+            <option value="Unrestricted">不可以是王</option>
+            <option value="TrumpsIncluded">任何牌，包括大小王</option>
             <option value="HighestCardNotAllowed">
-              Non-trump cards, except the highest
+              不可以是王或最大的牌
             </option>
             <option value="PointCardNotAllowed">
-              Non-trump, non-point cards (except K when playing A)
+              不可以是王, 不可以是分 (但是打A的时候可以是K)
             </option>
           </select>
         </label>
@@ -84,10 +84,10 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             value={props.state.propagated.advancement_policy}
             onChange={props.setAdvancementPolicy}
           >
-            <option value="Unrestricted">A must be defended</option>
-            <option value="FullyUnrestricted">Unrestricted</option>
+            <option value="Unrestricted">A必打</option>
+            <option value="FullyUnrestricted">无限制</option>
             <option value="DefendPoints">
-              Points (5, 10, K) and A must be defended
+              分 (5, 10, K) 和 A 必打
             </option>
           </select>
         </label>
@@ -101,20 +101,20 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             }
             onChange={props.setHideLandlordsPoints}
           >
-            <option value="show">Show all players&apos; points</option>
-            <option value="hide">Hide defending team&apos;s points</option>
+            <option value="show">显示</option>
+            <option value="hide">不显示</option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          是否展示打过的牌 (in chat):{" "}
+          是否展示打过的牌 (在聊天窗口):{" "}
           <select
             value={props.state.propagated.hide_played_cards ? "hide" : "show"}
             onChange={props.setHidePlayedCards}
           >
-            <option value="show">Show played cards in chat</option>
-            <option value="hide">Hide played cards in chat</option>
+            <option value="show">显示</option>
+            <option value="hide">不显示</option>
           </select>
         </label>
       </div>
@@ -125,9 +125,9 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             value={props.state.propagated.kitty_penalty}
             onChange={props.setKittyPenalty}
           >
-            <option value="Times">Twice the size of the last trick</option>
+            <option value="Times">抠底张数乘2</option>
             <option value="Power">
-              Two to the power of the size of the last trick
+              抠底张数的平方
             </option>
           </select>
         </label>
@@ -139,10 +139,10 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             value={props.state.propagated.throw_penalty}
             onChange={props.setThrowPenalty}
           >
-            <option value="None">No penalty</option>
             <option value="TenPointsPerAttempt">
-              Ten points per bad throw
+              罚10分
             </option>
+            <option value="None">不罚分</option>
           </select>
         </label>
       </div>
@@ -153,8 +153,8 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             value={props.state.propagated.play_takeback_policy}
             onChange={props.setPlayTakebackPolicy}
           >
-            <option value="AllowPlayTakeback">Allow taking back plays</option>
-            <option value="NoPlayTakeback">Disallow taking back plays</option>
+            <option value="NoPlayTakeback">不可</option>
+            <option value="AllowPlayTakeback">可以</option>
           </select>
         </label>
       </div>
@@ -165,8 +165,8 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             value={props.state.propagated.bid_takeback_policy}
             onChange={props.setBidTakebackPolicy}
           >
-            <option value="AllowBidTakeback">Allow bid takeback</option>
-            <option value="NoBidTakeback">No bid takeback</option>
+            <option value="NoBidTakeback">不可</option>
+            <option value="AllowBidTakeback">可以</option>
           </select>
         </label>
       </div>
