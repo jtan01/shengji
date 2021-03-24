@@ -469,13 +469,13 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
             onChange={props.setBidReinforcementPolicy}
           >
             <option value="ReinforceWhileWinning">
-              The current winning bid can be reinforced
+              当前叫庄者可加强
             </option>
             <option value="ReinforceWhileEquivalent">
-              A bid can be reinforced after it is overturned
+              参与叫庄者可加强
             </option>
             <option value="OverturnOrReinforceWhileWinning">
-              The current winning bid can be overturned by the same bidder
+              当前叫庄者可以改叫
             </option>
           </select>
         </label>
@@ -488,20 +488,20 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
             onChange={props.setJokerBidPolicy}
           >
             <option value="BothTwoOrMore">
-              At least two jokers (or number of decks) to bid no trump
+              至少两个王（大小均可）
             </option>
             <option value="BothNumDecks">
-              All the low or high jokers to bid no trump
+              需要全部大王或小王
             </option>
             <option value="LJNumDecksHJNumDecksLessOne">
-              All the low jokers or all but one high joker to bid no trump
+              至少两个小王或者一个大王
             </option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          Should reveal kitty at end of game:{" "}
+          游戏结束亮底牌？:{" "}
           <select
             value={
               props.state.propagated.should_reveal_kitty_at_end_of_game
@@ -511,17 +511,17 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
             onChange={props.setShouldRevealKittyAtEndOfGame}
           >
             <option value="hide">
-              Do not reveal contents of the kitty at the end of the game in chat
+              不在聊天窗口亮底牌
             </option>
             <option value="show">
-              Reveal contents of the kitty at the end of the game in chat
+              在聊天窗口亮底牌
             </option>
           </select>
         </label>
       </div>
       <div>
         <label>
-          Show player which defeats throw:{" "}
+          提示玩家谁比甩牌大:{" "}
           <select
             value={
               props.state.propagated.hide_throw_halting_player ? "hide" : "show"
@@ -529,10 +529,10 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
             onChange={props.setHideThrowHaltingPlayer}
           >
             <option value="hide">
-              Hide the player who defeats a potential throw
+              不提示
             </option>
             <option value="show">
-              Show the player who defeats a potential throw
+              提示
             </option>
           </select>
         </label>
@@ -1071,7 +1071,7 @@ const Initialize = (props: IProps): JSX.Element => {
         <h2>等待玩家加入...</h2>
       )}
       <RandomizePlayersButton players={props.state.propagated.players}>
-        Randomize player order
+        随机调整玩家座位
       </RandomizePlayersButton>
       <Kicker
         players={props.state.propagated.players}
@@ -1204,7 +1204,7 @@ const Initialize = (props: IProps): JSX.Element => {
           setPlayTakebackPolicy={setPlayTakebackPolicy}
           setBidTakebackPolicy={setBidTakebackPolicy}
         />
-        <h3>Continuation settings</h3>
+        <h3>游戏持续设置</h3>
         <LandlordSelector
           players={props.state.propagated.players}
           landlordId={props.state.propagated.landlord}
@@ -1218,7 +1218,7 @@ const Initialize = (props: IProps): JSX.Element => {
             send({ Action: { SetRank: newRank } })
           }
         />
-        <h3>Misc settings</h3>
+        <h3>其它设置</h3>
         <div>
           <label>
             庄家标签:{" "}
