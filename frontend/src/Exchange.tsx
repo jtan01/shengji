@@ -229,7 +229,7 @@ class Exchange extends React.Component<IExchangeProps, IExchangeState> {
                     lastBid.epoch !== this.props.state.epoch
                   }
                 >
-                  Pick up cards from the bottom
+                  收底
                 </button>
                 {isLandlord ? startGame : null}
               </>

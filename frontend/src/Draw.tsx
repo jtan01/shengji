@@ -168,7 +168,7 @@ class Draw extends React.Component<IDrawProps, IDrawState> {
                 }}
                 disabled={!canDraw}
               >
-                Draw card
+                摸牌
               </button>
               <label>
                 auto-draw
@@ -200,7 +200,7 @@ class Draw extends React.Component<IDrawProps, IDrawState> {
                         this.props.state.bids[0].id !== playerId)))
                 }
               >
-                Pick up cards from the bottom
+                收底
               </button>
               <button
                 onClick={this.revealCard}
@@ -213,7 +213,7 @@ class Draw extends React.Component<IDrawProps, IDrawState> {
                     this.props.state.kitty.length
                 }
               >
-                Reveal card from the bottom
+                亮底
               </button>
               <BeepButton />
             </>

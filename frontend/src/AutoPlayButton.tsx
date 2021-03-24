@@ -63,8 +63,8 @@ const AutoPlayButton = (props: IProps): JSX.Element => {
             playDescription !== null ? " (" + playDescription + ")" : ""
           }`
         : autoplay !== null
-        ? "Don't autoplay selected cards"
-        : "Autoplay selected cards"}
+        ? "不自动出牌"
+        : "自动出牌"}
     </button>
   );
 };

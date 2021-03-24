@@ -246,7 +246,7 @@ const Play = (props: IProps): JSX.Element => {
       />
       {playPhase.propagated.play_takeback_policy === "AllowPlayTakeback" && (
         <button onClick={takeBackCards} disabled={!canTakeBack}>
-          Take back last play
+          撤回
         </button>
       )}
       <button
@@ -255,7 +255,7 @@ const Play = (props: IProps): JSX.Element => {
           playPhase.trick.player_queue.length > 0 || playPhase.game_ended_early
         }
       >
-        Finish trick
+        完成本轮
       </button>
       {canEndGameEarly && (
         <button
@@ -265,7 +265,7 @@ const Play = (props: IProps): JSX.Element => {
             ) && endGameEarly();
           }}
         >
-          End game early
+          提早结束
         </button>
       )}
       {canFinish && <button onClick={startNewGame}>Finish game</button>}

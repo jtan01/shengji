@@ -840,12 +840,12 @@ impl UnitLike {
 
             if length == 2 {
                 if count == 2 {
-                    "对".to_string()
+                    "拖".to_string()
                 } else {
                     format!("{} 拖", Self::tuple_description(count))
                 }
             } else {
-                format!("{}-拖 of {}s", length, Self::tuple_description(count))
+                format!("{} 拖({})", length, Self::tuple_description(count))
             }
         } else {
             match length {
@@ -882,7 +882,7 @@ impl UnitLike {
     pub fn tuple_description(len: usize) -> String {
         match len {
             1 => "单".to_string(),
-            2 => "拖".to_string(),
+            2 => "对".to_string(),
             3 => "三张".to_string(),
             4 => "四张".to_string(),
             5 => "五张".to_string(),

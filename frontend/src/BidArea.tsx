@@ -72,7 +72,7 @@ const BidArea = (props: IBidAreaProps): JSX.Element => {
           );
         })}
         {props.bids.length === 0 && props.autobid === null ? (
-          <LabeledPlay label={"No bids yet..."} cards={["🂠"]} />
+          <LabeledPlay label={"暂时无人亮牌..."} cards={["🂠"]} />
         ) : null}
       </div>
     );
@@ -138,7 +138,7 @@ const BidArea = (props: IBidAreaProps): JSX.Element => {
             );
           })}
           {props.bids.length === 0 && props.autobid === null ? (
-            <LabeledPlay label={"No bids yet..."} cards={["🂠"]} />
+            <LabeledPlay label={"暂时无人亮牌..."} cards={["🂠"]} />
           ) : null}
         </div>
         {props.prefixButtons}
@@ -151,7 +151,7 @@ const BidArea = (props: IBidAreaProps): JSX.Element => {
               props.bids[props.bids.length - 1].epoch !== props.epoch
             }
           >
-            Take back bid
+            悔庄
           </button>
         ) : null}
         {props.suffixButtons}

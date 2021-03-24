@@ -29,9 +29,9 @@ const Friends = (props: IProps): JSX.Element => {
               出 {nth(friend.initial_skip + 1)}{" "}
               <InlineCard card={friend.card} /> 牌的是朋友.{" "}
               {props.showPlayed
-                ? `${
+                ? `出过${
                     friend.initial_skip - friend.skip
-                  } played in previous tricks.`
+                  }张.`
                 : ""}
             </p>
           );
