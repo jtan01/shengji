@@ -9,7 +9,7 @@ const contentStyle: React.CSSProperties = {
   transform: "translate(-50%, -50%)",
 };
 
-const changeLogVersion: number = 12;
+const changeLogVersion: number = 13;
 
 const ChangeLog = (): JSX.Element => {
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
@@ -41,6 +41,18 @@ const ChangeLog = (): JSX.Element => {
         style={{ content: contentStyle }}
       >
         <h2>Change Log</h2>
+        <p>3/21/2021:</p>
+        <ul>
+          <li>Added option to view (most of) the UI in dark mode.</li>
+          <li>Added button to randomize the player order.</li>
+          <li>Added button to check if everyone is ready.</li>
+        </ul>
+        <p>3/15/2021:</p>
+        <ul>
+          <li>
+            Added option in Finding Friends to select friends using trumps.
+          </li>
+        </ul>
         <p>2/15/2021:</p>
         <ul>
           <li>Support protecting tractors from four-of-a-kind.</li>

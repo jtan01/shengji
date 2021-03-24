@@ -1,4 +1,4 @@
-export type IGameMessage = "Beep" | IGameMessageUnion;
+export type IGameMessage = "Beep" | "ReadyCheck" | IGameMessageUnion;
 export interface IGameMessageUnion {
   Broadcast?: IGameMessageBroadcast;
   Error?: string;
@@ -162,6 +162,7 @@ export interface IPropagatedState {
   kitty_size: number | null;
   friend_selection_policy:
     | "Unrestricted"
+    | "TrumpsIncluded"
     | "HighestCardNotAllowed"
     | "PointCardNotAllowed";
   multiple_join_policy: "Unrestricted" | "NoDoubleJoin";

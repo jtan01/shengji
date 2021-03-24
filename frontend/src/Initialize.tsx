@@ -2,12 +2,14 @@ import * as React from "react";
 import ReactTooltip from "react-tooltip";
 import * as ReactModal from "react-modal";
 import { IEmojiData } from "emoji-picker-react";
+import ReadyCheck from "./ReadyCheck";
 import LandlordSelector from "./LandlordSelector";
 import NumDecksSelector from "./NumDecksSelector";
 import KittySizeSelector from "./KittySizeSelector";
 import RankSelector from "./RankSelector";
 import Kicker from "./Kicker";
 import ArrayUtils from "./util/array";
+import { RandomizePlayersButton } from "./RandomizePlayersButton";
 import { IInitializePhase, IPlayer, IPropagatedState, IDeck } from "./types";
 import { WebsocketContext } from "./WebsocketProvider";
 
@@ -49,6 +51,7 @@ const DifficultySettings = (props: IDifficultyProps): JSX.Element => {
             onChange={props.setFriendSelectionPolicy}
           >
             <option value="Unrestricted">Non-trump cards</option>
+            <option value="TrumpsIncluded">All cards, including trumps</option>
             <option value="HighestCardNotAllowed">
               Non-trump cards, except the highest
             </option>
@@ -755,6 +758,14 @@ const Initialize = (props: IProps): JSX.Element => {
       (p) => p.name === props.name
     );
   }
+  if (currentPlayer === undefined) {
+    currentPlayer = {
+      id: -1,
+      name: props.name,
+      level: "",
+      metalevel: 0,
+    };
+  }
 
   const landlordIndex = props.state.propagated.players.findIndex(
     (p) => p.id === props.state.propagated.landlord
@@ -1042,19 +1053,26 @@ const Initialize = (props: IProps): JSX.Element => {
         </a>
       </p>
       {props.state.propagated.players.length >= 4 ? (
-        <button
-          disabled={
-            props.state.propagated.game_start_policy === "AllowLandlordOnly" &&
-            landlordIndex !== -1 &&
-            props.state.propagated.players[landlordIndex].name !== props.name
-          }
-          onClick={startGame}
-        >
-          Start game
-        </button>
+        <>
+          <button
+            disabled={
+              props.state.propagated.game_start_policy ===
+                "AllowLandlordOnly" &&
+              landlordIndex !== -1 &&
+              props.state.propagated.players[landlordIndex].name !== props.name
+            }
+            onClick={startGame}
+          >
+            Start game
+          </button>
+          <ReadyCheck />
+        </>
       ) : (
         <h2>等待玩家加入...</h2>
       )}
+      <RandomizePlayersButton players={props.state.propagated.players}>
+        Randomize player order
+      </RandomizePlayersButton>
       <Kicker
         players={props.state.propagated.players}
         onKick={(playerId: number) => send({ Kick: playerId })}

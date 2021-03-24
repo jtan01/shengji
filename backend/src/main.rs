@@ -34,9 +34,12 @@ lazy_static::lazy_static! {
         #[cfg(feature = "dynamic")]
         let drain = slog_term::FullFormat::new(slog_term::TermDecorator::new().build()).build();
 
+
+        let version = std::env::var("VERSION").unwrap_or_else(|_| env!("VERGEN_SHA_SHORT").to_string());
+
         Logger::root(
             slog_async::Async::new(drain.fuse()).build().fuse(),
-            o!("commit" => env!("VERGEN_SHA_SHORT"))
+            o!("version" => version)
         )
     };
 
@@ -47,7 +50,9 @@ lazy_static::lazy_static! {
         std::sync::Mutex::new(comp)
     };
 
-    static ref VERSION: &'static str = env!("VERGEN_SHA");
+    static ref VERSION: String = {
+        std::env::var("VERSION").unwrap_or_else(|_| env!("VERGEN_SHA").to_string())
+    };
 }
 
 #[derive(Clone, Serialize)]
@@ -62,11 +67,11 @@ struct InMemoryStats {
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
-struct GameStats {
+struct GameStats<'a> {
     num_games_created: usize,
     num_active_games: usize,
     num_players_online_now: usize,
-    sha: &'static str,
+    sha: &'a str,
 }
 
 struct GameState {
@@ -134,6 +139,8 @@ pub enum UserMessage {
     Action(interactive::Action),
     Kick(types::PlayerID),
     Beep,
+    ReadyCheck,
+    Ready,
 }
 
 const DUMP_PATH: &str = "/tmp/shengji_state.json";
@@ -246,7 +253,7 @@ async fn main() {
         .or(static_routes)
         .or(rules);
 
-    warp::serve(routes).run(([127, 0, 0, 1], 3030)).await;
+    warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
 }
 
 async fn try_read_file<M: serde::de::DeserializeOwned>(path: &'_ str) -> Result<M, io::Error> {
@@ -359,7 +366,7 @@ async fn get_stats(
         num_games_created,
         num_players_online_now,
         num_active_games: games.len(),
-        sha: *VERSION,
+        sha: &*VERSION,
     }))
 }
 
@@ -566,6 +573,31 @@ async fn handle_user_action(
                 if user.player_id == next_player_id {
                     messages.push((user.clone(), GameMessage::Beep));
                 }
+            }
+        }
+        UserMessage::ReadyCheck => {
+            for user in game.users.values() {
+                messages.push((
+                    user.clone(),
+                    GameMessage::Message {
+                        from: name.to_owned(),
+                        message: "Is everyone ready?".to_owned(),
+                    },
+                ));
+                if user.player_id != caller.player_id {
+                    messages.push((user.clone(), GameMessage::ReadyCheck));
+                }
+            }
+        }
+        UserMessage::Ready => {
+            for user in game.users.values() {
+                messages.push((
+                    user.clone(),
+                    GameMessage::Message {
+                        from: name.to_owned(),
+                        message: "I'm ready!".to_owned(),
+                    },
+                ));
             }
         }
         UserMessage::Message(m) => {

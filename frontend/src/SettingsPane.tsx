@@ -68,6 +68,17 @@ const SettingsPane = (props: IProps): JSX.Element => {
           </Cell>
         </Row>
         <Row>
+          <LabelCell>暗色模式</LabelCell>
+          <Cell>
+            <input
+              name="dark-mode"
+              type="checkbox"
+              checked={settings.darkMode}
+              onChange={handleChange({ darkMode: !settings.darkMode })}
+            />
+          </Cell>
+        </Row>
+        <Row>
           <LabelCell>使用SVG高彩牌</LabelCell>
           <Cell>
             <input
