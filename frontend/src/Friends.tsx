@@ -26,8 +26,8 @@ const Friends = (props: IProps): JSX.Element => {
           }
           return (
             <p key={idx}>
-              The person to play the {nth(friend.initial_skip + 1)}{" "}
-              <InlineCard card={friend.card} /> is a friend.{" "}
+              出 {nth(friend.initial_skip + 1)}{" "}
+              <InlineCard card={friend.card} /> 牌的是朋友.{" "}
               {props.showPlayed
                 ? `${
                     friend.initial_skip - friend.skip

@@ -421,10 +421,12 @@ button.normal {
 
 .trump {
   margin: 10px 0;
+  font-size: large;
 }
 
 .pending-friends p {
   margin: 0;
+  font-size: large;
 }
 
 .pending-friends {

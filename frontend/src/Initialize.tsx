@@ -1063,7 +1063,7 @@ const Initialize = (props: IProps): JSX.Element => {
             }
             onClick={startGame}
           >
-            Start game
+            开始
           </button>
           <ReadyCheck />
         </>

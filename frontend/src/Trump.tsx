@@ -15,11 +15,11 @@ const Trump = (props: IProps): JSX.Element => {
     )[0].value;
     return (
       <div className="trump">
-        The trump suit is <InlineCard card={card} /> (rank {rank})
+        主牌是 <InlineCard card={card} /> (rank {rank})
       </div>
     );
   } else {
-    return <div className="trump">No trump, rank {trump.NoTrump.number}</div>;
+    return <div className="trump">无将, rank {trump.NoTrump.number}</div>;
   }
 };
 

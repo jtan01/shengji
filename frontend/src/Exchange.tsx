@@ -194,7 +194,7 @@ class Exchange extends React.Component<IExchangeProps, IExchangeState> {
             this.props.state.autobid === null)
         }
       >
-        Start game
+        开始
       </button>
     );
     const bidUI =

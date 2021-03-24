@@ -7,10 +7,10 @@ const ReadyCheck = (): JSX.Element => {
   return (
     <button
       onClick={() =>
-        confirm("Are you ready to start the game?") && send("ReadyCheck")
+        confirm("开始游戏?") && send("ReadyCheck")
       }
     >
-      Check if everyone is ready!
+      检查所有玩家就绪！
     </button>
   );
 };
