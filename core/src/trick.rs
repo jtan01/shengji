@@ -812,7 +812,7 @@ impl UnitLike {
                 .next()
                 .expect("only one item in description");
             if ct == 1 {
-                format!("a {}", desc)
+                format!("{}", desc)
             } else {
                 format!("{} {}", ct, desc)
             }
@@ -882,7 +882,7 @@ impl UnitLike {
     pub fn tuple_description(len: usize) -> String {
         match len {
             1 => "单".to_string(),
-            2 => "对".to_string(),
+            2 => "拖".to_string(),
             3 => "三张".to_string(),
             4 => "四张".to_string(),
             5 => "五张".to_string(),
