@@ -53,6 +53,14 @@ lazy_static::lazy_static! {
     static ref VERSION: String = {
         std::env::var("VERSION").unwrap_or_else(|_| env!("VERGEN_SHA").to_string())
     };
+
+    static ref DUMP_PATH: String = {
+        std::env::var("DUMP_PATH").unwrap_or_else(|_| "/tmp/shengji_state.json".to_string())
+    };
+    static ref MESSAGE_PATH: String = {
+        std::env::var("MESSAGE_PATH").unwrap_or_else(|_| "/tmp/shengji_messages.json".to_string())
+    };
+
 }
 
 #[derive(Clone, Serialize)]
@@ -143,16 +151,13 @@ pub enum UserMessage {
     Ready,
 }
 
-const DUMP_PATH: &str = "/tmp/shengji_state.json";
-const MESSAGE_PATH: &str = "/tmp/shengji_messages.json";
-
 #[tokio::main]
 async fn main() {
     let mut game_state = HashMap::new();
 
-    let init_logger = ROOT_LOGGER.new(o!("dump_path" => DUMP_PATH));
+    let init_logger = ROOT_LOGGER.new(o!("dump_path" => &*DUMP_PATH));
 
-    match try_read_file::<HashMap<String, serde_json::Value>>(DUMP_PATH).await {
+    match try_read_file::<HashMap<String, serde_json::Value>>(&*DUMP_PATH).await {
         Ok(dump) => {
             for (room_name, game_dump) in dump {
                 match serde_json::from_value(game_dump) {
@@ -185,7 +190,7 @@ async fn main() {
     let games = Arc::new(Mutex::new(game_state));
     let stats = Arc::new(Mutex::new(InMemoryStats::default()));
 
-    match try_read_file::<Vec<String>>(MESSAGE_PATH).await {
+    match try_read_file::<Vec<String>>(&*MESSAGE_PATH).await {
         Ok(messages) => {
             let mut stats = stats.lock().await;
             stats.header_messages = messages;
@@ -197,13 +202,16 @@ async fn main() {
         }
     }
 
-    let games = warp::any().map(move || (games.clone(), stats.clone()));
+    let periodic_task = periodically_dump_state(games.clone(), stats.clone());
 
-    let api = warp::path("api").and(warp::ws()).and(games.clone()).map(
-        |ws: warp::ws::Ws, (games, stats)| {
+    let games_filter = warp::any().map(move || (games.clone(), stats.clone()));
+
+    let api = warp::path("api")
+        .and(warp::ws())
+        .and(games_filter.clone())
+        .map(|ws: warp::ws::Ws, (games, stats)| {
             ws.on_upgrade(move |socket| user_connected(socket, games, stats))
-        },
-    );
+        });
 
     let cards = warp::path("cards.json").map(|| warp::reply::json(&*CARDS_JSON));
 
@@ -224,10 +232,10 @@ async fn main() {
     });
 
     let dump_state = warp::path("full_state.json")
-        .and(games.clone())
+        .and(games_filter.clone())
         .and_then(|(game, stats)| dump_state(game, stats));
     let game_stats = warp::path("stats")
-        .and(games)
+        .and(games_filter)
         .and_then(|(game, stats)| get_stats(game, stats));
 
     #[cfg(feature = "dynamic")]
@@ -253,7 +261,14 @@ async fn main() {
         .or(static_routes)
         .or(rules);
 
-    warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
+    let serve_task = warp::serve(routes).run(([0, 0, 0, 0], 3030));
+
+    tokio::select! {
+        () = periodic_task => unreachable!(),
+        () = serve_task => {
+            info!(init_logger, "Shutting down")
+        },
+    }
 }
 
 async fn try_read_file<M: serde::de::DeserializeOwned>(path: &'_ str) -> Result<M, io::Error> {
@@ -263,13 +278,21 @@ async fn try_read_file<M: serde::de::DeserializeOwned>(path: &'_ str) -> Result<
     Ok(serde_json::from_slice(&data)?)
 }
 
+async fn periodically_dump_state(games: Games, stats: Arc<Mutex<InMemoryStats>>) {
+    let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(60));
+    loop {
+        interval.tick().await;
+        let _ = dump_state(games.clone(), stats.clone()).await;
+    }
+}
+
 async fn dump_state(
     games: Games,
     stats: Arc<Mutex<InMemoryStats>>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let mut state_dump: HashMap<String, game_state::GameState> = HashMap::new();
 
-    let header_messages = try_read_file::<Vec<String>>(MESSAGE_PATH)
+    let header_messages = try_read_file::<Vec<String>>(&*MESSAGE_PATH)
         .await
         .unwrap_or_default();
     let send_header_messages = {
@@ -319,7 +342,7 @@ async fn dump_state(
     drop(games);
 
     let logger = ROOT_LOGGER.new(o!(
-        "dump_path" => DUMP_PATH,
+        "dump_path" => &*DUMP_PATH,
         "num_games" => state_dump.len(),
         "num_players" => num_players,
         "num_observers" => num_observers,
@@ -343,7 +366,7 @@ async fn dump_state(
 async fn write_state_to_disk(
     state: &HashMap<String, game_state::GameState>,
 ) -> std::io::Result<()> {
-    let mut f = tokio::fs::File::create(DUMP_PATH).await?;
+    let mut f = tokio::fs::File::create(&*DUMP_PATH).await?;
     let json = serde_json::to_vec(state)?;
     f.write_all(&json).await?;
     f.sync_all().await?;
