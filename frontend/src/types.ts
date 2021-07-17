@@ -1,9 +1,14 @@
-export type IGameMessage = "Beep" | "ReadyCheck" | IGameMessageUnion;
-export interface IGameMessageUnion {
+export interface IGameMessage {
   Broadcast?: IGameMessageBroadcast;
   Error?: string;
   Message?: IGameMessageMessage;
   State?: IGameMessageState;
+  Beep?: {
+    target: string;
+  };
+  ReadyCheck?: {
+    source: string;
+  };
   Header?: {
     messages: string[];
   };
@@ -193,6 +198,7 @@ export interface IPropagatedState {
   game_scoring_parameters: IGameScoringParameters;
   should_reveal_kitty_at_end_of_game: boolean;
   hide_throw_halting_player: boolean;
+  tractor_requirements: ITractorRequirements;
 }
 
 export interface IGameScoringParameters {
@@ -299,4 +305,9 @@ export interface IDeck {
   exclude_small_joker: boolean;
   exclude_big_joker: boolean;
   min: string;
+}
+
+export interface ITractorRequirements {
+  min_count: number;
+  min_length: number;
 }

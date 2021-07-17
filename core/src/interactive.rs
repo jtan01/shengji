@@ -12,7 +12,7 @@ use crate::settings::{
     GameModeSettings, GameShadowingPolicy, GameStartPolicy, KittyBidPolicy, KittyPenalty,
     KittyTheftPolicy, MultipleJoinPolicy, PlayTakebackPolicy, PropagatedState, ThrowPenalty,
 };
-use crate::trick::{ThrowEvaluationPolicy, TrickDrawPolicy, TrickUnit};
+use crate::trick::{ThrowEvaluationPolicy, TractorRequirements, TrickDrawPolicy, TrickUnit};
 use crate::types::{Card, Number, PlayerID};
 
 pub struct InteractiveGame {
@@ -28,6 +28,10 @@ impl InteractiveGame {
         Self { state }
     }
 
+    pub fn into_state(self) -> GameState {
+        self.state
+    }
+
     pub fn register(
         &mut self,
         name: String,
@@ -37,9 +41,13 @@ impl InteractiveGame {
         Ok((actor, self.hydrate_messages(actor, msgs)?))
     }
 
-    pub fn kick(&mut self, id: PlayerID) -> Result<Vec<(BroadcastMessage, String)>, Error> {
-        let msgs = self.state.kick(id)?;
-        self.hydrate_messages(id, msgs)
+    pub fn kick(
+        &mut self,
+        actor: PlayerID,
+        target: PlayerID,
+    ) -> Result<Vec<(BroadcastMessage, String)>, Error> {
+        let msgs = self.state.kick(target)?;
+        self.hydrate_messages(actor, msgs)
     }
 
     pub fn dump_state(&self) -> Result<GameState, Error> {
@@ -56,6 +64,10 @@ impl InteractiveGame {
 
     pub fn next_player(&self) -> Result<PlayerID, Error> {
         self.state.next_player()
+    }
+
+    pub fn player_name(&self, player_id: PlayerID) -> Result<&'_ str, Error> {
+        self.state.player_name(player_id)
     }
 
     #[allow(clippy::cognitive_complexity)]
@@ -118,37 +130,37 @@ impl InteractiveGame {
                 state.set_kitty_size(size)?.into_iter().collect()
             }
             (Action::SetFriendSelectionPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting friend selection policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting friend selection policy"; "policy" => policy);
                 state.set_friend_selection_policy(policy)?
             }
             (Action::SetMultipleJoinPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting multiple join policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting multiple join policy"; "policy" => policy);
                 state.set_multiple_join_policy(policy)?
             }
             (
                 Action::SetFirstLandlordSelectionPolicy(policy),
                 GameState::Initialize(ref mut state),
             ) => {
-                info!(logger, "Setting first landlord selection policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting first landlord selection policy"; "policy" => policy);
                 state.set_first_landlord_selection_policy(policy)?
             }
             (Action::SetBidPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting bid selection policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting bid selection policy"; "policy" => policy);
                 state.set_bid_policy(policy)?
             }
             (Action::SetBidReinforcementPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting bid reinforcement policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting bid reinforcement policy"; "policy" => policy);
                 state.set_bid_reinforcement_policy(policy)?
             }
             (Action::SetJokerBidPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting joker bid selection policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting joker bid selection policy"; "policy" => policy);
                 state.set_joker_bid_policy(policy)?
             }
             (
                 Action::SetShouldRevealKittyAtEndOfGame(should_reveal),
                 GameState::Initialize(ref mut state),
             ) => {
-                info!(logger, "Setting should reveal kitty at end of game"; "should_reveal" => format!("{:?}", should_reveal));
+                info!(logger, "Setting should reveal kitty at end of game"; "should_reveal" => should_reveal);
                 state.set_should_reveal_kitty_at_end_of_game(should_reveal)?
             }
             (Action::SetLandlord(landlord), GameState::Initialize(ref mut state)) => {
@@ -193,55 +205,62 @@ impl InteractiveGame {
                 state.set_game_mode(game_mode)?
             }
             (Action::SetKittyPenalty(kitty_penalty), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting kitty penalty"; "penalty" => format!("{:?}", kitty_penalty));
+                info!(logger, "Setting kitty penalty"; "penalty" => kitty_penalty);
                 state.set_kitty_penalty(kitty_penalty)?
             }
             (Action::SetKittyBidPolicy(kitty_bid_policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting kitty bid policy"; "bid_policy" => format!("{:?}", kitty_bid_policy));
+                info!(logger, "Setting kitty bid policy"; "bid_policy" => kitty_bid_policy);
                 state.set_kitty_bid_policy(kitty_bid_policy)?
             }
             (Action::SetTrickDrawPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting trick draw policy"; "draw_policy" => format!("{:?}", policy));
+                info!(logger, "Setting trick draw policy"; "draw_policy" => policy);
                 state.set_trick_draw_policy(policy)?
             }
             (Action::SetAdvancementPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting advancement policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting advancement policy"; "policy" => policy);
                 state.set_advancement_policy(policy)?
             }
             (
                 Action::SetGameScoringParameters(ref parameters),
                 GameState::Initialize(ref mut state),
             ) => {
-                info!(logger, "Setting game scoring parameters"; "parameters" => format!("{:?}", parameters));
+                info!(logger, "Setting game scoring parameters"; "parameters" => parameters);
                 state.set_game_scoring_parameters(parameters.clone())?
             }
             (Action::SetThrowPenalty(throw_penalty), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting throw penalty"; "penalty" => format!("{:?}", throw_penalty));
+                info!(logger, "Setting throw penalty"; "penalty" => throw_penalty);
                 state.set_throw_penalty(throw_penalty)?
             }
             (Action::SetThrowEvaluationPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting throw evaluation policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting throw evaluation policy"; "policy" => policy);
                 state.set_throw_evaluation_policy(policy)?
             }
             (Action::SetPlayTakebackPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting play takeback policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting play takeback policy"; "policy" => policy);
                 state.set_play_takeback_policy(policy)?
             }
             (Action::SetBidTakebackPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting bid takeback policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting bid takeback policy"; "policy" => policy);
                 state.set_bid_takeback_policy(policy)?
             }
             (Action::SetKittyTheftPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting kitty theft policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting kitty theft policy"; "policy" => policy);
                 state.set_kitty_theft_policy(policy)?
             }
             (Action::SetGameShadowingPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting user multiple game session policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting user multiple game session policy"; "policy" => policy);
                 state.set_user_multiple_game_session_policy(policy)?
             }
             (Action::SetGameStartPolicy(policy), GameState::Initialize(ref mut state)) => {
-                info!(logger, "Setting game start policy"; "policy" => format!("{:?}", policy));
+                info!(logger, "Setting game start policy"; "policy" => policy);
                 state.set_game_start_policy(policy)?
+            }
+            (
+                Action::SetTractorRequirements(requirements),
+                GameState::Initialize(ref mut state),
+            ) => {
+                info!(logger, "Setting tractor requirements"; "tractor_requirements" => requirements);
+                state.set_tractor_requirements(requirements)?
             }
             (Action::DrawCard, GameState::Draw(ref mut state)) => {
                 debug!(logger, "Drawing card");
@@ -261,7 +280,7 @@ impl InteractiveGame {
                 }
             }
             (Action::TakeBackBid, GameState::Draw(ref mut state)) => {
-                debug!(logger, "Taking back bid");
+                info!(logger, "Taking back bid");
                 state.take_back_bid(id)?;
                 vec![MessageVariant::TookBackBid]
             }
@@ -279,7 +298,7 @@ impl InteractiveGame {
                 }
             }
             (Action::TakeBackBid, GameState::Exchange(ref mut state)) => {
-                debug!(logger, "Taking back bid");
+                info!(logger, "Taking back bid");
                 state.take_back_bid(id)?;
                 vec![MessageVariant::TookBackBid]
             }
@@ -294,12 +313,12 @@ impl InteractiveGame {
                 vec![MessageVariant::PutDownCards]
             }
             (Action::MoveCardToKitty(card), GameState::Exchange(ref mut state)) => {
-                debug!(logger, "Moving card to kitty");
+                info!(logger, "Moving card to kitty");
                 state.move_card_to_kitty(id, card)?;
                 vec![]
             }
             (Action::MoveCardToHand(card), GameState::Exchange(ref mut state)) => {
-                debug!(logger, "Moving card to hand");
+                info!(logger, "Moving card to hand");
                 state.move_card_to_hand(id, card)?;
                 vec![]
             }
@@ -314,14 +333,14 @@ impl InteractiveGame {
                 vec![]
             }
             (Action::PlayCards(ref cards), GameState::Play(ref mut state)) => {
-                debug!(logger, "Playing cards");
+                info!(logger, "Playing cards");
                 state.play_cards(id, cards)?
             }
             (
                 Action::PlayCardsWithHint(ref cards, ref format_hint),
                 GameState::Play(ref mut state),
             ) => {
-                debug!(logger, "Playing cards with formatting hint");
+                info!(logger, "Playing cards with formatting hint");
                 state.play_cards_with_hint(id, cards, Some(format_hint))?
             }
             (Action::EndTrick, GameState::Play(ref mut state)) => {
@@ -329,7 +348,7 @@ impl InteractiveGame {
                 state.finish_trick()?
             }
             (Action::TakeBackCards, GameState::Play(ref mut state)) => {
-                debug!(logger, "Taking back cards");
+                info!(logger, "Taking back cards");
                 state.take_back_cards(id)?;
                 vec![MessageVariant::TookBackPlay]
             }
@@ -408,6 +427,7 @@ pub enum Action {
     SetGameStartPolicy(GameStartPolicy),
     SetShouldRevealKittyAtEndOfGame(bool),
     SetHideThrowHaltingPlayer(bool),
+    SetTractorRequirements(TractorRequirements),
     StartGame,
     DrawCard,
     RevealCard,
@@ -475,6 +495,7 @@ impl BroadcastMessage {
             MultipleJoinPolicySet { policy: MultipleJoinPolicy::NoDoubleJoin } => format!("{} prevented players from joining the team multiple times", n?),
             FirstLandlordSelectionPolicySet { policy: FirstLandlordSelectionPolicy::ByWinningBid } => format!("{} set winning bid to decide both landlord and trump", n?),
             FirstLandlordSelectionPolicySet { policy: FirstLandlordSelectionPolicy::ByFirstBid } => format!("{} set first bid to decide landlord, winning bid to decide trump", n?),
+            BidPolicySet { policy: BidPolicy::JokerOrHigherSuit } => format!("{} allowed joker or higher suit bids to outbid non-joker bids with the same number of cards", n?),
             BidPolicySet { policy: BidPolicy::JokerOrGreaterLength } => format!("{} allowed joker bids to outbid non-joker bids with the same number of cards", n?),
             BidPolicySet { policy: BidPolicy::GreaterLength } => format!("{} required all bids to have more cards than the previous bids", n?),
             BidReinforcementPolicySet { policy: BidReinforcementPolicy::ReinforceWhileWinning } => format!("{} allowed reinforcing the winning bid", n?),
@@ -543,6 +564,7 @@ impl BroadcastMessage {
             EndOfGameSummary { landlord_won: false, non_landlords_points } => format!("Landlord team lost, opposing team collected {} points", non_landlords_points),
             HideThrowHaltingPlayer { set: true } => format!("{} hid the player who prevents throws", n?),
             HideThrowHaltingPlayer { set: false } => format!("{} un-hid the player who prevents throws", n?),
+            TractorRequirementsChanged { tractor_requirements } => format!("{} required tractors to be at least {} cards wide by {} tuples long", n?, tractor_requirements.min_count, tractor_requirements.min_length),
         })
     }
 }

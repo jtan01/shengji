@@ -10,7 +10,13 @@ import RankSelector from "./RankSelector";
 import Kicker from "./Kicker";
 import ArrayUtils from "./util/array";
 import { RandomizePlayersButton } from "./RandomizePlayersButton";
-import { IInitializePhase, IPlayer, IPropagatedState, IDeck } from "./types";
+import {
+  IInitializePhase,
+  IPlayer,
+  IPropagatedState,
+  IDeck,
+  ITractorRequirements,
+} from "./types";
 import { WebsocketContext } from "./WebsocketProvider";
 
 import Header from "./Header";
@@ -326,6 +332,48 @@ const DeckSettings = (props: IDeckSettings): JSX.Element => {
   );
 };
 
+interface ITractorRequirementsProps {
+  tractorRequirements: ITractorRequirements;
+  numDecks: number;
+  onChange: (requirements: ITractorRequirements) => void;
+}
+
+const TractorRequirements = (props: ITractorRequirementsProps): JSX.Element => {
+  return (
+    <div>
+      <label>Tractor requirements: </label>
+      <input
+        type="number"
+        style={{ width: "3em" }}
+        onChange={(v) =>
+          props.onChange({
+            ...props.tractorRequirements,
+            min_count: v.target.valueAsNumber,
+          })
+        }
+        value={props.tractorRequirements.min_count}
+        min="2"
+        max={props.numDecks}
+      />
+      <label> cards wide by </label>
+      <input
+        type="number"
+        style={{ width: "3em" }}
+        onChange={(v) =>
+          props.onChange({
+            ...props.tractorRequirements,
+            min_length: v.target.valueAsNumber,
+          })
+        }
+        value={props.tractorRequirements.min_length}
+        min="2"
+        max="12"
+      />
+      <label> tuples long</label>
+    </div>
+  );
+};
+
 interface IScoringSettings {
   state: IInitializePhase;
   decks: IDeck[];
@@ -364,6 +412,7 @@ const ScoringSettings = (props: IScoringSettings): JSX.Element => {
 
 interface IUncommonSettings {
   state: IInitializePhase;
+  numDecksEffective: number;
   setBidPolicy: (v: React.ChangeEvent<HTMLSelectElement>) => void;
   setBidReinforcementPolicy: (v: React.ChangeEvent<HTMLSelectElement>) => void;
   setJokerBidPolicy: (v: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -377,6 +426,7 @@ interface IUncommonSettings {
   setGameShadowingPolicy: (v: React.ChangeEvent<HTMLSelectElement>) => void;
   setKittyBidPolicy: (v: React.ChangeEvent<HTMLSelectElement>) => void;
   setHideThrowHaltingPlayer: (v: React.ChangeEvent<HTMLSelectElement>) => void;
+  setTractorRequirements: (v: ITractorRequirements) => void;
 }
 
 const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
@@ -452,6 +502,10 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
             value={props.state.propagated.bid_policy}
             onChange={props.setBidPolicy}
           >
+            <option value="JokerOrHigherSuit">
+              Joker or higher suit bids to outbid non-joker bids with the same
+              number of cards
+            </option>
             <option value="JokerOrGreaterLength">
               同数目王牌可反无将
             </option>
@@ -499,6 +553,11 @@ const UncommonSettings = (props: IUncommonSettings): JSX.Element => {
           </select>
         </label>
       </div>
+      <TractorRequirements
+        tractorRequirements={props.state.propagated.tractor_requirements}
+        numDecks={props.numDecksEffective}
+        onChange={(req) => props.setTractorRequirements(req)}
+      />
       <div>
         <label>
           游戏结束亮底牌？:{" "}
@@ -617,30 +676,28 @@ const Initialize = (props: IProps): JSX.Element => {
     }
   };
 
-  const onSelectString = (
-    action: string
-  ): ((evt: React.ChangeEvent<HTMLSelectElement>) => void) => (
-    evt: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    evt.preventDefault();
-    if (evt.target.value !== "") {
-      send({ Action: { [action]: evt.target.value } });
-    }
-  };
+  const onSelectString =
+    (action: string): ((evt: React.ChangeEvent<HTMLSelectElement>) => void) =>
+    (evt: React.ChangeEvent<HTMLSelectElement>): void => {
+      evt.preventDefault();
+      if (evt.target.value !== "") {
+        send({ Action: { [action]: evt.target.value } });
+      }
+    };
 
-  const onSelectStringDefault = (
-    action: string,
-    defaultValue: null | string
-  ): ((evt: React.ChangeEvent<HTMLSelectElement>) => void) => (
-    evt: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    evt.preventDefault();
-    if (evt.target.value !== "") {
-      send({ Action: { [action]: evt.target.value } });
-    } else {
-      send({ Action: { [action]: defaultValue } });
-    }
-  };
+  const onSelectStringDefault =
+    (
+      action: string,
+      defaultValue: null | string
+    ): ((evt: React.ChangeEvent<HTMLSelectElement>) => void) =>
+    (evt: React.ChangeEvent<HTMLSelectElement>): void => {
+      evt.preventDefault();
+      if (evt.target.value !== "") {
+        send({ Action: { [action]: evt.target.value } });
+      } else {
+        send({ Action: { [action]: defaultValue } });
+      }
+    };
 
   const setFriendSelectionPolicy = onSelectString("SetFriendSelectionPolicy");
   const setMultipleJoinPolicy = onSelectString("SetMultipleJoinPolicy");
@@ -975,6 +1032,13 @@ const Initialize = (props: IProps): JSX.Element => {
               },
             });
             break;
+          case "tractor_requirements":
+            send({
+              Action: {
+                SetTractorRequirements: value,
+              },
+            });
+            break;
         }
       }
     }
@@ -1182,6 +1246,7 @@ const Initialize = (props: IProps): JSX.Element => {
         <ScoringSettings state={props.state} decks={decks} />
         <UncommonSettings
           state={props.state}
+          numDecksEffective={decksEffective}
           setBidPolicy={setBidPolicy}
           setBidReinforcementPolicy={setBidReinforcementPolicy}
           setJokerBidPolicy={setJokerBidPolicy}
@@ -1191,6 +1256,9 @@ const Initialize = (props: IProps): JSX.Element => {
           setGameStartPolicy={setGameStartPolicy}
           setGameShadowingPolicy={setGameShadowingPolicy}
           setKittyBidPolicy={setKittyBidPolicy}
+          setTractorRequirements={(requirements) =>
+            send({ Action: { SetTractorRequirements: requirements } })
+          }
         />
         <DifficultySettings
           state={props.state}

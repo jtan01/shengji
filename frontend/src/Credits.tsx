@@ -9,7 +9,7 @@ const contentStyle: React.CSSProperties = {
   transform: "translate(-50%, -50%)",
 };
 
-const changeLogVersion: number = 13;
+const changeLogVersion: number = 14;
 
 const ChangeLog = (): JSX.Element => {
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
@@ -41,6 +41,20 @@ const ChangeLog = (): JSX.Element => {
         style={{ content: contentStyle }}
       >
         <h2>Change Log</h2>
+        <p>7/04/2021:</p>
+        <ul>
+          <li>
+            Added option to customize the minimum tractor size under &ldquo;more
+            game settings&rdquo;
+          </li>
+        </ul>
+        <p>6/18/2021:</p>
+        <ul>
+          <li>
+            Added option for higher suit non-joker bids to outbid non-joker
+            bids.
+          </li>
+        </ul>
         <p>3/21/2021:</p>
         <ul>
           <li>Added option to view (most of) the UI in dark mode.</li>
@@ -380,7 +394,9 @@ const ChangeLog = (): JSX.Element => {
 
 const Credits = (): JSX.Element => (
   <p style={{ padding: "0 20px" }}>
-    Made by Robert Ying, Abra Shen, and other{" "}
+    Made by Robert Ying (
+    <a href="mailto:me@robertying.com">me@robertying.com</a>), Abra Shen, and
+    other{" "}
     <a
       href="https://github.com/rbtying/shengji/graphs/contributors"
       target="_blank"
